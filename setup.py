@@ -66,7 +66,7 @@ class PostInstallCommand(install):
 
 setup(
     name='0wned',
-    version='0.9.1',
+    version='0.9.2',
     description='Code execution via Python package installation.',
     long_description=long_description,
     long_description_content_type='text/markdown',
